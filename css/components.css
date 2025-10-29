@@ -398,6 +398,16 @@
   transition: all var(--transition-base) var(--ease-standard);
   flex: 1;
   min-width: 0;
+  /* Button reset for accessibility */
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.nav-item:focus {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: -2px;
 }
 
 .nav-item.active {

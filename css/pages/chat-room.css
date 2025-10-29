@@ -1,0 +1,307 @@
+/**
+ * MatchU - Chat Room Page Styles (聊天室頁面樣式)
+ */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        /* Messages Area */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            background: #F8F9FA;
+        }
+
+        .message {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: flex-end;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+        }
+
+        .message.sent .message-avatar {
+            display: none;
+        }
+
+        .message-content {
+            max-width: 70%;
+        }
+
+        /* Activity Suggestion Card */
+        .activity-suggestion {
+            background: linear-gradient(135deg, #E3F2FD 0%, #F0F8FF 100%);
+            border: 2px dashed var(--info);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin: var(--space-lg) 0;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .activity-suggestion-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+            color: var(--primary-blue);
+            font-weight: var(--weight-semibold);
+        }
+
+        .activity-option {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: var(--space-md);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .activity-option:hover {
+            border-color: var(--primary-blue);
+            background: #F8F9FA;
+        }
+
+        .activity-option:active {
+            transform: scale(0.98);
+        }
+
+        .activity-option-title {
+            font-size: var(--font-body);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-xs);
+        }
+
+        .activity-option-location {
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+        }
+
+        /* Invitation Card */
+        .invitation-card {
+            background: white;
+            border: 2px solid var(--accent-coral);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin: var(--space-md) 0;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .invitation-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+            color: var(--accent-coral);
+            font-weight: var(--weight-semibold);
+        }
+
+        .invitation-details {
+            margin-bottom: var(--space-md);
+        }
+
+        .invitation-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xs);
+            font-size: var(--font-body-sm);
+        }
+
+        .invitation-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .invitation-status {
+            background: var(--success-bg);
+            color: var(--success);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-body-sm);
+            font-weight: var(--weight-semibold);
+            text-align: center;
+        }
+
+        .invitation-status.rejected {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: var(--space-md);
+            background: white;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: var(--space-sm);
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .message-input {
+            width: 100%;
+            min-height: 40px;
+            max-height: 120px;
+            padding: 10px 40px 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            resize: none;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .plus-btn {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-full);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .plus-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .send-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: scale(1.1);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-btn:disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-placeholder);
+            cursor: not-allowed;
+        }
+
+        /* Plus Menu */
+        .plus-menu {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: var(--space-sm);
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-xl);
+            padding: var(--space-sm);
+            display: none;
+            flex-direction: column;
+            gap: var(--space-xs);
+            min-width: 200px;
+        }
+
+        .plus-menu.show {
+            display: flex;
+        }
+
+        .menu-item {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .menu-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Invitation Modal */
+        .invitation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            padding: var(--space-md);
+        }
+
+        .invitation-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;

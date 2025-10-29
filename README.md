@@ -580,9 +580,9 @@ MatchU-In-NTU/
 
 ---
 
-最後更新: 2025-10-29
-版本: v1.0.0
-開發狀態: MVP 階段 - 所有核心頁面與功能已完成 ✅
+最後更新: 2025-10-30
+版本: v1.1.0
+開發狀態: 代碼重構完成 - 模組化、組件化、無障礙優化 ✅
 
 ## 📋 核心特色
 
@@ -641,7 +641,7 @@ MatchU/
 │   ├── profile.html             # 個人資料頁
 │   ├── match.html               # 配對頁面
 │   ├── chat.html                # 聊天室
-│   ├── activities.html          # 活動列表
+│   ├── activity-list.html       # 活動列表
 │   └── settings.html            # 設定頁
 │
 ├── css/

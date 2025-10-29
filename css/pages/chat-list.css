@@ -1,0 +1,75 @@
+/**
+ * MatchU - Chat List Page Styles (聊天列表頁面樣式)
+ */
+
+/* Page Layout */
+.chat-list-page {
+  background: var(--bg-secondary);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* Chat Item */
+.chat-item {
+  background: white;
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  cursor: pointer;
+  transition: background var(--transition-base);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.chat-item:hover {
+  background: var(--bg-secondary);
+}
+
+.chat-item:active {
+  transform: scale(0.98);
+}
+
+.chat-avatar-wrapper {
+  position: relative;
+}
+
+.chat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.chat-name {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.chat-time {
+  font-size: var(--font-body-sm);
+  color: var(--text-tertiary);
+}
+
+.chat-preview {
+  color: var(--text-secondary);
+  font-size: var(--font-body-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-preview.unread {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Empty State */
+.empty-chat {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-lg);
+}

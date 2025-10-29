@@ -1,0 +1,133 @@
+/**
+ * MatchU - Profile Page Styles (個人中心頁面樣式)
+ */
+        .profile-page {
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .profile-header {
+            background: var(--gradient-primary);
+            padding: var(--space-2xl) var(--space-md);
+            text-align: center;
+            color: white;
+        }
+
+        .profile-avatar-wrapper {
+            margin-bottom: var(--space-md);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-full);
+            border: 4px solid white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .profile-name {
+            font-size: var(--font-h2);
+            font-weight: var(--weight-bold);
+            margin-bottom: var(--space-xs);
+        }
+
+        .profile-department {
+            font-size: var(--font-body);
+            opacity: 0.9;
+        }
+
+        .edit-profile-btn {
+            margin-top: var(--space-md);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .edit-profile-btn:hover {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .stats-section {
+            background: white;
+            padding: var(--space-lg);
+            display: flex;
+            justify-content: space-around;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--font-h2);
+            font-weight: var(--weight-bold);
+            color: var(--primary-blue);
+        }
+
+        .stat-label {
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+        }
+
+        .menu-section {
+            margin-top: var(--space-md);
+            background: white;
+        }
+
+        .menu-group-title {
+            padding: var(--space-md);
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            font-weight: var(--weight-semibold);
+        }
+
+        .menu-item {
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background var(--transition-base);
+        }
+
+        .menu-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .menu-item:active {
+            background: var(--bg-tertiary);
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .menu-item-icon {
+            font-size: 24px;
+        }
+
+        .menu-item-text {
+            font-size: var(--font-body);
+            color: var(--text-primary);
+        }
+
+        .menu-item-arrow {
+            color: var(--text-tertiary);
+        }
+
+        .logout-btn {
+            margin: var(--space-lg);
+            background: var(--error);
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: var(--error-bg);
+            color: var(--error);

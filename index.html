@@ -151,6 +151,7 @@
             font-weight: var(--weight-bold);
             box-shadow: var(--shadow-xl);
             transition: all var(--transition-slow) var(--ease-standard);
+            opacity: 1; /* 確保按鈕預設可見 */
         }
 
         .cta-btn-primary {
@@ -317,13 +318,20 @@
     <script>
         // 頁面載入動畫
         document.addEventListener('DOMContentLoaded', () => {
+            // 確認 GSAP 已載入
+            if (typeof gsap === 'undefined') {
+                console.error('GSAP not loaded');
+                return;
+            }
+
             initLandingPageAnimations();
             startFloatingHearts();
         });
 
         // 初始化著陸頁動畫
         function initLandingPageAnimations() {
-            const tl = gsap.timeline();
+            // 使用 timeline 確保動畫順序執行
+            const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
             // Logo 動畫
             tl.from('.logo-container', {
@@ -337,33 +345,38 @@
             tl.from('.hero-title', {
                 duration: 0.6,
                 y: 30,
-                opacity: 0,
-                ease: 'power2.out'
+                opacity: 0
             }, '-=0.4');
 
             tl.from('.hero-subtitle', {
                 duration: 0.6,
                 y: 20,
-                opacity: 0,
-                ease: 'power2.out'
+                opacity: 0
             }, '-=0.3');
 
-            // 按鈕動畫
-            tl.from('.cta-buttons .btn', {
-                duration: 0.5,
-                y: 20,
-                opacity: 0,
-                stagger: 0.1,
-                ease: 'back.out(1.5)'
-            }, '-=0.2');
+            // 按鈕動畫 - 使用 fromTo 確保結束狀態
+            tl.fromTo('.cta-buttons .btn',
+                {
+                    y: 20,
+                    opacity: 0
+                },
+                {
+                    duration: 0.5,
+                    y: 0,
+                    opacity: 1,
+                    stagger: 0.1,
+                    ease: 'back.out(1.5)',
+                    clearProps: 'transform' // 動畫完成後清除 transform
+                },
+                '-=0.2'
+            );
 
             // Features 動畫
             tl.from('.feature-item', {
                 duration: 0.4,
                 y: 20,
                 opacity: 0,
-                stagger: 0.1,
-                ease: 'power2.out'
+                stagger: 0.1
             }, '-=0.3');
         }
 

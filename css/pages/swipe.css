@@ -1,0 +1,257 @@
+/**
+ * MatchU - Swipe Page Styles (盲盒抽卡頁面樣式)
+ */
+
+/* Page Layout */
+.swipe-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F8F9FA 0%, #E8F5E9 100%);
+  padding-bottom: 80px;
+}
+
+/* Card Container */
+.card-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 550px;
+  margin: var(--space-xl) auto;
+  perspective: 1000px;
+}
+
+/* User Card */
+.swipe-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+  cursor: pointer;
+}
+
+.swipe-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}
+
+.card-front {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.card-front-content {
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+.card-front-icon {
+  font-size: 64px;
+  margin-bottom: var(--space-md);
+}
+
+.card-front-text {
+  font-size: var(--font-h3);
+  font-weight: var(--weight-semibold);
+}
+
+.card-back {
+  background: white;
+  transform: rotateY(180deg);
+}
+
+.card-image {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  background: linear-gradient(180deg, #87CEEB 0%, #4A7C59 100%);
+}
+
+.card-info {
+  padding: var(--space-lg);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.card-name {
+  font-size: var(--font-h3);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.card-department {
+  font-size: var(--font-body-sm);
+  color: var(--text-secondary);
+  margin: var(--space-xs) 0;
+}
+
+.card-bio {
+  color: var(--text-secondary);
+  line-height: var(--line-height-loose);
+  font-size: var(--font-body-sm);
+  margin-top: var(--space-md);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.action-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-slow) var(--ease-standard);
+}
+
+.action-btn:active {
+  transform: scale(0.9);
+}
+
+.btn-pass {
+  background: white;
+  color: var(--text-tertiary);
+}
+
+.btn-like {
+  background: var(--accent-coral);
+  color: white;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Swipes Remaining */
+.swipes-info {
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+.swipes-count {
+  font-size: var(--font-body);
+  color: var(--text-secondary);
+}
+
+.swipes-count strong {
+  color: var(--accent-coral);
+  font-size: var(--font-h4);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: var(--space-md);
+}
+
+.empty-title {
+  font-size: var(--font-h3);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-text {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+/* Match Success Modal */
+.match-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+}
+
+.match-modal.show {
+  display: flex;
+}
+
+.match-content {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  text-align: center;
+  max-width: 90%;
+  max-width: 400px;
+}
+
+.match-title {
+  font-size: 48px;
+  margin-bottom: var(--space-lg);
+}
+
+.match-avatars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.match-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.match-heart {
+  font-size: 32px;
+  animation: heartBeat 0.8s infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.match-message {
+  font-size: var(--font-h4);
+  margin-bottom: var(--space-md);
+}
+
+.match-common {
+  color: var(--text-secondary);
+  font-size: var(--font-body-sm);
+  margin-bottom: var(--space-xl);
+}

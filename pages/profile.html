@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#003060">
+    <title>MatchU - 個人中心</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .profile-page {
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .profile-header {
+            background: var(--gradient-primary);
+            padding: var(--space-2xl) var(--space-md);
+            text-align: center;
+            color: white;
+        }
+
+        .profile-avatar-wrapper {
+            margin-bottom: var(--space-md);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-full);
+            border: 4px solid white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .profile-name {
+            font-size: var(--font-h2);
+            font-weight: var(--weight-bold);
+            margin-bottom: var(--space-xs);
+        }
+
+        .profile-department {
+            font-size: var(--font-body);
+            opacity: 0.9;
+        }
+
+        .edit-profile-btn {
+            margin-top: var(--space-md);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .edit-profile-btn:hover {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .stats-section {
+            background: white;
+            padding: var(--space-lg);
+            display: flex;
+            justify-content: space-around;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--font-h2);
+            font-weight: var(--weight-bold);
+            color: var(--primary-blue);
+        }
+
+        .stat-label {
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+        }
+
+        .menu-section {
+            margin-top: var(--space-md);
+            background: white;
+        }
+
+        .menu-group-title {
+            padding: var(--space-md);
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            font-weight: var(--weight-semibold);
+        }
+
+        .menu-item {
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background var(--transition-base);
+        }
+
+        .menu-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .menu-item:active {
+            background: var(--bg-tertiary);
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .menu-item-icon {
+            font-size: 24px;
+        }
+
+        .menu-item-text {
+            font-size: var(--font-body);
+            color: var(--text-primary);
+        }
+
+        .menu-item-arrow {
+            color: var(--text-tertiary);
+        }
+
+        .logout-btn {
+            margin: var(--space-lg);
+            background: var(--error);
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-page page-with-nav">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="top-nav-title">個人中心</div>
+            </div>
+            <div class="top-nav-right">
+                <button class="btn-icon" onclick="window.location.href='settings.html'">
+                    <span>⚙️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar-wrapper">
+                <img src="https://i.pravatar.cc/300?img=33" alt="我的頭像" class="profile-avatar">
+            </div>
+            <div class="profile-name" id="profileName">載入中...</div>
+            <div class="profile-department" id="profileDepartment">載入中...</div>
+            <button class="btn edit-profile-btn" onclick="editProfile()">
+                編輯個人檔案
+            </button>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-item">
+                <div class="stat-number" id="matchCount">0</div>
+                <div class="stat-label">配對數</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="chatCount">0</div>
+                <div class="stat-label">聊天中</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="activityCount">0</div>
+                <div class="stat-label">活動數</div>
+            </div>
+        </div>
+
+        <!-- Menu Section -->
+        <div class="menu-section">
+            <div class="menu-group-title">個人資料</div>
+            <div class="menu-item" onclick="viewPhotos()">
+                <div class="menu-item-left">
+                    <div class="menu-item-icon">📸</div>
+                    <div class="menu-item-text">我的照片</div>
+                </div>
+                <div class="menu-item-arrow">→</div>
+            </div>
+            <div class="menu-item" onclick="editInterests()">
+                <div class="menu-item-left">
+                    <div class="menu-item-icon">🏷️</div>
+                    <div class="menu-item-text">興趣標籤</div>
+                </div>
+                <div class="menu-item-arrow">→</div>
+            </div>
+            <div class="menu-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="menu-item-left">
+                    <div class="menu-item-icon">⭐</div>
+                    <div class="menu-item-text">我的徽章</div>
+                </div>
+                <div class="menu-item-arrow">→</div>
+            </div>
+        </div>
+
+        <div class="menu-section mt-md">
+            <div class="menu-group-title">其他</div>
+            <div class="menu-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="menu-item-left">
+                    <div class="menu-item-icon">❓</div>
+                    <div class="menu-item-text">幫助與回饋</div>
+                </div>
+                <div class="menu-item-arrow">→</div>
+            </div>
+            <div class="menu-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="menu-item-left">
+                    <div class="menu-item-icon">📄</div>
+                    <div class="menu-item-text">關於 MatchU</div>
+                </div>
+                <div class="menu-item-arrow">→</div>
+            </div>
+        </div>
+
+        <button class="btn btn-block logout-btn" onclick="logout()">
+            登出
+        </button>
+
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="window.location.href='swipe.html'">
+                <div class="nav-icon">🎴</div>
+                <div>盲盒</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='chat-list.html'">
+                <div class="nav-icon">💬</div>
+                <div>聊天</div>
+            </div>
+            <div class="nav-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="nav-icon">🎉</div>
+                <div>活動</div>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='profile.html'">
+                <div class="nav-icon">👤</div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+        });
+
+        function loadProfile() {
+            const user = initializeUserData();
+
+            // 填充資料
+            document.getElementById('profileName').textContent = `${user.name}, ${user.age}`;
+            document.getElementById('profileDepartment').textContent = user.department;
+
+            // 統計數據
+            document.getElementById('matchCount').textContent = user.matches.length;
+            document.getElementById('chatCount').textContent = user.matches.filter(id =>
+                FAKE_MESSAGES[id] && FAKE_MESSAGES[id].length > 0
+            ).length;
+            document.getElementById('activityCount').textContent = 0;
+
+            // 進場動畫
+            gsap.from('.profile-header', {
+                duration: 0.6,
+                y: -30,
+                opacity: 0,
+                ease: 'power2.out'
+            });
+
+            gsap.from('.stats-section', {
+                duration: 0.5,
+                y: 20,
+                opacity: 0,
+                delay: 0.2,
+                ease: 'power2.out'
+            });
+
+            gsap.from('.menu-section', {
+                duration: 0.5,
+                y: 20,
+                opacity: 0,
+                stagger: 0.1,
+                delay: 0.3,
+                ease: 'power2.out'
+            });
+        }
+
+        function editProfile() {
+            Utils.showToast('編輯個人檔案', 'info');
+        }
+
+        function viewPhotos() {
+            Utils.showToast('查看照片', 'info');
+        }
+
+        function editInterests() {
+            // 顯示興趣標籤
+            const user = initializeUserData();
+            const interestsText = user.interests.join('、');
+            Utils.showToast(`您的興趣: ${interestsText}`, 'info', 5000);
+        }
+
+        function logout() {
+            Utils.showConfirm(
+                '確定要登出嗎?',
+                () => {
+                    Utils.showLoading('登出中...');
+                    setTimeout(() => {
+                        Utils.hideLoading();
+                        Utils.showToast('已登出', 'success');
+                        setTimeout(() => {
+                            window.location.href = '../index.html';
+                        }, 500);
+                    }, 1000);
+                }
+            );
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#003060">
+    <title>MatchU - 聊天</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .chat-list-page {
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .chat-item {
+            background: white;
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            cursor: pointer;
+            transition: background var(--transition-base);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .chat-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .chat-item:active {
+            transform: scale(0.98);
+        }
+
+        .chat-avatar-wrapper {
+            position: relative;
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xs);
+        }
+
+        .chat-name {
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .chat-time {
+            font-size: var(--font-body-sm);
+            color: var(--text-tertiary);
+        }
+
+        .chat-preview {
+            color: var(--text-secondary);
+            font-size: var(--font-body-sm);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-preview.unread {
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .empty-chat {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-list-page page-with-nav">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="top-nav-title">聊天</div>
+            </div>
+            <div class="top-nav-right">
+                <button class="btn-icon">
+                    <span>🔍</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="chatList">
+            <!-- Chat items will be dynamically inserted here -->
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="window.location.href='swipe.html'">
+                <div class="nav-icon">🎴</div>
+                <div>盲盒</div>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='chat-list.html'">
+                <div class="nav-icon">💬</div>
+                <div>聊天</div>
+            </div>
+            <div class="nav-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="nav-icon">🎉</div>
+                <div>活動</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='profile.html'">
+                <div class="nav-icon">👤</div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatList();
+        });
+
+        function loadChatList() {
+            const chatList = document.getElementById('chatList');
+            const matches = CURRENT_USER.matches;
+
+            if (matches.length === 0) {
+                chatList.innerHTML = `
+                    <div class="empty-chat">
+                        <div style="font-size: 64px; margin-bottom: var(--space-md);">💬</div>
+                        <h2>還沒有配對對象</h2>
+                        <p style="color: var(--text-secondary); margin: var(--space-md) 0;">
+                            去盲盒抽卡認識新朋友吧!
+                        </p>
+                        <button class="btn btn-primary" onclick="window.location.href='swipe.html'">
+                            前往抽卡
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            matches.forEach((userId, index) => {
+                const user = FAKE_USERS.find(u => u.id === userId);
+                const messages = FAKE_MESSAGES[userId] || [];
+                const lastMessage = messages[messages.length - 1];
+                const unreadCount = messages.filter(m => m.senderId === userId && !m.isRead).length;
+
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item';
+                chatItem.onclick = () => window.location.href = `chat-room.html?userId=${userId}`;
+
+                chatItem.innerHTML = `
+                    <div class="chat-avatar-wrapper">
+                        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                        ${user.isOnline ? '<div class="avatar-status"></div>' : ''}
+                        ${unreadCount > 0 ? `<span class="badge badge-absolute">${unreadCount}</span>` : ''}
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-header">
+                            <div class="chat-name">${user.name}</div>
+                            <div class="chat-time">${lastMessage ? lastMessage.timestamp : '剛剛'}</div>
+                        </div>
+                        <div class="chat-preview ${unreadCount > 0 ? 'unread' : ''}">
+                            ${lastMessage ? lastMessage.content : '開始聊天吧!'}
+                        </div>
+                    </div>
+                `;
+
+                chatList.appendChild(chatItem);
+
+                // 進場動畫
+                gsap.from(chatItem, {
+                    duration: 0.4,
+                    y: 20,
+                    opacity: 0,
+                    delay: index * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+        }
+    </script>
+</body>
+</html>

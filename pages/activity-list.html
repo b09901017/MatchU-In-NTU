@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#003060">
+    <title>MatchU - 活動廣場</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .activity-list-page {
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .activity-header {
+            background: var(--gradient-primary);
+            padding: var(--space-lg) var(--space-md);
+            color: white;
+        }
+
+        .activity-stats {
+            display: flex;
+            gap: var(--space-lg);
+            margin-top: var(--space-md);
+        }
+
+        .activity-stat-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .activity-stat-number {
+            font-size: var(--font-h2);
+            font-weight: var(--weight-bold);
+        }
+
+        .activity-stat-label {
+            font-size: var(--font-body-sm);
+            opacity: 0.9;
+            margin-top: var(--space-xs);
+        }
+
+        .filter-section {
+            background: white;
+            padding: var(--space-md);
+            display: flex;
+            gap: var(--space-sm);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-section::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: var(--space-xs) var(--space-md);
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-full);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: var(--font-body-sm);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .activity-list-container {
+            padding: var(--space-md);
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .activity-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .activity-card:active {
+            transform: scale(0.98);
+        }
+
+        .activity-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+        }
+
+        .activity-type {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+        }
+
+        .activity-type-emoji {
+            font-size: 24px;
+        }
+
+        .activity-status {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-body-sm);
+            font-weight: var(--weight-semibold);
+        }
+
+        .activity-status.recruiting {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .activity-status.full {
+            background: var(--bg-tertiary);
+            color: var(--text-tertiary);
+        }
+
+        .activity-status.closed {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .activity-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .activity-detail-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+        }
+
+        .activity-detail-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .activity-organizer {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .activity-organizer-avatar {
+            width: 32px;
+            height: 32px;
+        }
+
+        .activity-organizer-info {
+            flex: 1;
+        }
+
+        .activity-organizer-name {
+            font-size: var(--font-body-sm);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .activity-organizer-dept {
+            font-size: var(--font-body-xs);
+            color: var(--text-tertiary);
+        }
+
+        .activity-participants {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .activity-participants-avatars {
+            display: flex;
+            margin-left: calc(var(--space-xs) * -1);
+        }
+
+        .activity-participants-avatars img {
+            width: 24px;
+            height: 24px;
+            border: 2px solid white;
+            margin-left: calc(var(--space-xs) * -1);
+        }
+
+        .activity-participants-count {
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            margin-left: var(--space-xs);
+        }
+
+        .create-activity-btn {
+            position: fixed;
+            bottom: 96px;
+            right: var(--space-md);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 24px;
+            box-shadow: var(--shadow-lg);
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            transition: all var(--transition-base);
+        }
+
+        .create-activity-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .create-activity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+        }
+
+        .empty-state-emoji {
+            font-size: 64px;
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state-title {
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+        }
+
+        .empty-state-description {
+            font-size: var(--font-body);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-md);
+        }
+
+        .modal-body {
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-body);
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .activity-type-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+        }
+
+        .activity-type-option {
+            padding: var(--space-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .activity-type-option:hover {
+            border-color: var(--primary-blue);
+            background: var(--bg-secondary);
+        }
+
+        .activity-type-option.selected {
+            border-color: var(--primary-blue);
+            background: var(--primary-light);
+        }
+
+        .activity-type-option-emoji {
+            font-size: 32px;
+            margin-bottom: var(--space-xs);
+        }
+
+        .activity-type-option-label {
+            font-size: var(--font-body-sm);
+            font-weight: var(--weight-semibold);
+        }
+
+        .participant-limit-input {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .participant-limit-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .participant-limit-btn:hover {
+            border-color: var(--primary-blue);
+            background: var(--primary-light);
+        }
+
+        .participant-limit-value {
+            flex: 1;
+            text-align: center;
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+        }
+
+        .activity-detail-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .activity-detail-page.show {
+            display: block;
+        }
+
+        .activity-detail-hero {
+            background: var(--gradient-primary);
+            padding: var(--space-2xl) var(--space-md);
+            color: white;
+            text-align: center;
+        }
+
+        .activity-detail-emoji {
+            font-size: 64px;
+            margin-bottom: var(--space-md);
+        }
+
+        .activity-detail-title {
+            font-size: var(--font-h2);
+            font-weight: var(--weight-bold);
+            margin-bottom: var(--space-sm);
+        }
+
+        .activity-detail-content {
+            padding: var(--space-lg);
+        }
+
+        .activity-detail-section {
+            margin-bottom: var(--space-lg);
+        }
+
+        .activity-detail-section-title {
+            font-size: var(--font-body);
+            font-weight: var(--weight-semibold);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+        }
+
+        .join-activity-btn {
+            position: fixed;
+            bottom: var(--space-md);
+            left: var(--space-md);
+            right: var(--space-md);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-list-page page-with-nav">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="top-nav-title">活動廣場</div>
+            </div>
+            <div class="top-nav-right">
+                <button class="btn-icon" onclick="Utils.showToast('搜尋功能開發中', 'info')">
+                    <span>🔍</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Activity Header -->
+        <div class="activity-header">
+            <h1>探索台大周邊活動</h1>
+            <div class="activity-stats">
+                <div class="activity-stat-item">
+                    <div class="activity-stat-number" id="activeActivities">12</div>
+                    <div class="activity-stat-label">進行中</div>
+                </div>
+                <div class="activity-stat-item">
+                    <div class="activity-stat-number" id="myActivities">3</div>
+                    <div class="activity-stat-label">我參加的</div>
+                </div>
+                <div class="activity-stat-item">
+                    <div class="activity-stat-number" id="totalParticipants">48</div>
+                    <div class="activity-stat-label">總參與人數</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-chip active" data-filter="all" onclick="filterActivities('all')">全部</div>
+            <div class="filter-chip" data-filter="coffee" onclick="filterActivities('coffee')">☕ 喝咖啡</div>
+            <div class="filter-chip" data-filter="movie" onclick="filterActivities('movie')">🎬 看電影</div>
+            <div class="filter-chip" data-filter="study" onclick="filterActivities('study')">📚 一起讀書</div>
+            <div class="filter-chip" data-filter="food" onclick="filterActivities('food')">🍽️ 吃美食</div>
+            <div class="filter-chip" data-filter="sport" onclick="filterActivities('sport')">⚽ 運動</div>
+            <div class="filter-chip" data-filter="exhibition" onclick="filterActivities('exhibition')">🎨 看展覽</div>
+            <div class="filter-chip" data-filter="game" onclick="filterActivities('game')">🎮 打遊戲</div>
+            <div class="filter-chip" data-filter="walk" onclick="filterActivities('walk')">🌳 散步</div>
+        </div>
+
+        <!-- Activity List -->
+        <div class="activity-list-container" id="activityList">
+            <!-- Activities will be dynamically inserted here -->
+        </div>
+
+        <!-- Create Activity Button -->
+        <button class="create-activity-btn" onclick="openCreateActivityModal()" title="發起新活動">
+            +
+        </button>
+
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="window.location.href='swipe.html'">
+                <div class="nav-icon">🎴</div>
+                <div>盲盒</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='chat-list.html'">
+                <div class="nav-icon">💬</div>
+                <div>聊天</div>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='activity-list.html'">
+                <div class="nav-icon">🎉</div>
+                <div>活動</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='profile.html'">
+                <div class="nav-icon">👤</div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Activity Modal -->
+    <div class="modal" id="createActivityModal">
+        <div class="modal-content">
+            <div class="modal-header">發起新活動</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">活動類型</label>
+                    <div class="activity-type-selector">
+                        <div class="activity-type-option" data-type="coffee" data-emoji="☕" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">☕</div>
+                            <div class="activity-type-option-label">喝咖啡</div>
+                        </div>
+                        <div class="activity-type-option" data-type="movie" data-emoji="🎬" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">🎬</div>
+                            <div class="activity-type-option-label">看電影</div>
+                        </div>
+                        <div class="activity-type-option" data-type="study" data-emoji="📚" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">📚</div>
+                            <div class="activity-type-option-label">一起讀書</div>
+                        </div>
+                        <div class="activity-type-option" data-type="food" data-emoji="🍽️" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">🍽️</div>
+                            <div class="activity-type-option-label">吃美食</div>
+                        </div>
+                        <div class="activity-type-option" data-type="sport" data-emoji="⚽" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">⚽</div>
+                            <div class="activity-type-option-label">運動</div>
+                        </div>
+                        <div class="activity-type-option" data-type="exhibition" data-emoji="🎨" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">🎨</div>
+                            <div class="activity-type-option-label">看展覽</div>
+                        </div>
+                        <div class="activity-type-option" data-type="game" data-emoji="🎮" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">🎮</div>
+                            <div class="activity-type-option-label">打遊戲</div>
+                        </div>
+                        <div class="activity-type-option" data-type="walk" data-emoji="🌳" onclick="selectActivityType(this)">
+                            <div class="activity-type-option-emoji">🌳</div>
+                            <div class="activity-type-option-label">散步</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">活動標題</label>
+                    <input type="text" class="form-input" id="activityTitle" placeholder="例如: 週五下午一起喝咖啡聊天">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">活動時間</label>
+                    <input type="datetime-local" class="form-input" id="activityTime">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">活動地點</label>
+                    <input type="text" class="form-input" id="activityLocation" placeholder="例如: 舟山路咖啡廳">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">人數限制</label>
+                    <div class="participant-limit-input">
+                        <button class="participant-limit-btn" onclick="adjustParticipantLimit(-1)">-</button>
+                        <div class="participant-limit-value" id="participantLimit">4</div>
+                        <button class="participant-limit-btn" onclick="adjustParticipantLimit(1)">+</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">活動說明 (選填)</label>
+                    <textarea class="form-textarea" id="activityDescription" placeholder="描述活動的更多細節..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary flex-1" onclick="closeModal('createActivityModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="createActivity()">發起活動</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Detail Page -->
+    <div class="activity-detail-page" id="activityDetailPage">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <button class="btn-icon" onclick="closeActivityDetail()">
+                    <span>←</span>
+                </button>
+                <div class="top-nav-title">活動詳情</div>
+            </div>
+            <div class="top-nav-right">
+                <button class="btn-icon" onclick="Utils.showToast('分享功能開發中', 'info')">
+                    <span>📤</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="activity-detail-hero">
+            <div class="activity-detail-emoji" id="detailEmoji">☕</div>
+            <div class="activity-detail-title" id="detailTitle">一起喝咖啡</div>
+            <div class="activity-status recruiting" id="detailStatus">招募中</div>
+        </div>
+
+        <div class="activity-detail-content">
+            <div class="activity-detail-section">
+                <div class="activity-detail-section-title">活動資訊</div>
+                <div class="activity-details" id="detailInfo">
+                    <!-- Will be filled dynamically -->
+                </div>
+            </div>
+
+            <div class="activity-detail-section">
+                <div class="activity-detail-section-title">活動說明</div>
+                <p id="detailDescription" style="color: var(--text-secondary); line-height: 1.6;">
+                    <!-- Will be filled dynamically -->
+                </p>
+            </div>
+
+            <div class="activity-detail-section">
+                <div class="activity-detail-section-title">主辦人</div>
+                <div class="activity-organizer" id="detailOrganizer">
+                    <!-- Will be filled dynamically -->
+                </div>
+            </div>
+
+            <div class="activity-detail-section">
+                <div class="activity-detail-section-title">參與者</div>
+                <div id="detailParticipants">
+                    <!-- Will be filled dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-block join-activity-btn" id="joinBtn" onclick="joinActivity()">
+            參加活動
+        </button>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+
+    <script>
+        // Fake activities data
+        const FAKE_ACTIVITIES = [
+            {
+                id: 1,
+                type: 'coffee',
+                emoji: '☕',
+                title: '週五下午喝咖啡聊天',
+                time: '今天 15:00',
+                location: '舟山路咖啡廳',
+                organizer: FAKE_USERS[0],
+                participants: [FAKE_USERS[0], FAKE_USERS[1]],
+                maxParticipants: 4,
+                status: 'recruiting',
+                description: '想找人一起喝咖啡聊聊天,分享最近的生活和學習心得。歡迎喜歡咖啡的朋友一起來!'
+            },
+            {
+                id: 2,
+                type: 'study',
+                emoji: '📚',
+                title: '總圖夜讀小組',
+                time: '今天 19:00',
+                location: '總圖書館 4F',
+                organizer: FAKE_USERS[2],
+                participants: [FAKE_USERS[2], FAKE_USERS[3], FAKE_USERS[4]],
+                maxParticipants: 6,
+                status: 'recruiting',
+                description: '準備期中考,找幾個人一起讀書互相督促。會準備一些小零食,讀書氛圍很好!'
+            },
+            {
+                id: 3,
+                type: 'movie',
+                emoji: '🎬',
+                title: '週末一起看電影',
+                time: '明天 14:00',
+                location: '威秀影城',
+                organizer: FAKE_USERS[1],
+                participants: [FAKE_USERS[1], FAKE_USERS[5]],
+                maxParticipants: 4,
+                status: 'recruiting',
+                description: '最近有部新片上映,想找人一起去看。看完可以一起討論劇情!'
+            },
+            {
+                id: 4,
+                type: 'food',
+                emoji: '🍽️',
+                title: '公館美食探險',
+                time: '明天 12:00',
+                location: '公館商圈',
+                organizer: FAKE_USERS[3],
+                participants: [FAKE_USERS[3], FAKE_USERS[0], FAKE_USERS[2], FAKE_USERS[1]],
+                maxParticipants: 4,
+                status: 'full',
+                description: '一起去公館吃美食!有幾家想試試的餐廳,吃貨歡迎加入~'
+            },
+            {
+                id: 5,
+                type: 'sport',
+                emoji: '⚽',
+                title: '醉月湖慢跑',
+                time: '今天 17:30',
+                location: '醉月湖',
+                organizer: FAKE_USERS[4],
+                participants: [FAKE_USERS[4], FAKE_USERS[5]],
+                maxParticipants: 5,
+                status: 'recruiting',
+                description: '下課後一起去醉月湖慢跑,大概跑 3-5 圈。跑完可以一起吃晚餐!'
+            },
+            {
+                id: 6,
+                type: 'walk',
+                emoji: '🌳',
+                title: '椰林大道散步',
+                time: '今天 16:00',
+                location: '椰林大道',
+                organizer: FAKE_USERS[5],
+                participants: [FAKE_USERS[5], FAKE_USERS[2], FAKE_USERS[3]],
+                maxParticipants: 4,
+                status: 'recruiting',
+                description: '天氣很好,想找人一起在椰林大道散散步聊聊天。會帶相機,可以幫大家拍照!'
+            }
+        ];
+
+        let currentFilter = 'all';
+        let selectedActivityType = null;
+        let participantLimit = 4;
+        let currentActivityDetail = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+            animateEntrance();
+        });
+
+        function renderActivities() {
+            const container = document.getElementById('activityList');
+            const filtered = currentFilter === 'all'
+                ? FAKE_ACTIVITIES
+                : FAKE_ACTIVITIES.filter(a => a.type === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-emoji">🎉</div>
+                        <div class="empty-state-title">目前沒有相關活動</div>
+                        <div class="empty-state-description">
+                            成為第一個發起活動的人吧!
+                        </div>
+                        <button class="btn btn-primary" onclick="openCreateActivityModal()">
+                            發起新活動
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach((activity, index) => {
+                const card = createActivityCard(activity);
+                container.appendChild(card);
+
+                // Entrance animation
+                gsap.from(card, {
+                    duration: 0.4,
+                    y: 20,
+                    opacity: 0,
+                    delay: index * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+        }
+
+        function createActivityCard(activity) {
+            const card = document.createElement('div');
+            card.className = 'activity-card';
+            card.onclick = () => openActivityDetail(activity);
+
+            const statusText = activity.status === 'recruiting' ? '招募中' :
+                              activity.status === 'full' ? '已額滿' : '已結束';
+            const statusClass = activity.status;
+
+            // Get participant avatars (show up to 3)
+            const participantAvatars = activity.participants.slice(0, 3).map(p =>
+                `<img src="${p.avatar}" alt="${p.name}" class="avatar-xs">`
+            ).join('');
+
+            card.innerHTML = `
+                <div class="activity-card-header">
+                    <div class="activity-type">
+                        <span class="activity-type-emoji">${activity.emoji}</span>
+                        <span>${activity.title}</span>
+                    </div>
+                    <div class="activity-status ${statusClass}">${statusText}</div>
+                </div>
+                <div class="activity-details">
+                    <div class="activity-detail-item">
+                        <span class="activity-detail-icon">📅</span>
+                        <span>${activity.time}</span>
+                    </div>
+                    <div class="activity-detail-item">
+                        <span class="activity-detail-icon">📍</span>
+                        <span>${activity.location}</span>
+                    </div>
+                    <div class="activity-detail-item">
+                        <span class="activity-detail-icon">👥</span>
+                        <span>${activity.participants.length} / ${activity.maxParticipants} 人</span>
+                    </div>
+                </div>
+                <div class="activity-organizer">
+                    <img src="${activity.organizer.avatar}" alt="${activity.organizer.name}" class="avatar activity-organizer-avatar">
+                    <div class="activity-organizer-info">
+                        <div class="activity-organizer-name">${activity.organizer.name}</div>
+                        <div class="activity-organizer-dept">${activity.organizer.department}</div>
+                    </div>
+                    ${activity.participants.length > 1 ? `
+                        <div class="activity-participants">
+                            <div class="activity-participants-avatars">
+                                ${participantAvatars}
+                            </div>
+                            ${activity.participants.length > 3 ? `
+                                <span class="activity-participants-count">+${activity.participants.length - 3}</span>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function filterActivities(filter) {
+            currentFilter = filter;
+
+            // Update filter chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.dataset.filter === filter) {
+                    chip.classList.add('active');
+                }
+            });
+
+            renderActivities();
+        }
+
+        function openCreateActivityModal() {
+            document.getElementById('createActivityModal').classList.add('show');
+            animateModal('createActivityModal');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            gsap.to(modal.querySelector('.modal-content'), {
+                duration: 0.2,
+                scale: 0.9,
+                opacity: 0,
+                onComplete: () => {
+                    modal.classList.remove('show');
+                }
+            });
+        }
+
+        function animateModal(modalId) {
+            const content = document.getElementById(modalId).querySelector('.modal-content');
+            gsap.from(content, {
+                duration: 0.3,
+                scale: 0.9,
+                opacity: 0,
+                ease: 'back.out(1.7)'
+            });
+        }
+
+        function selectActivityType(element) {
+            document.querySelectorAll('.activity-type-option').forEach(opt =>
+                opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedActivityType = {
+                type: element.dataset.type,
+                emoji: element.dataset.emoji
+            };
+        }
+
+        function adjustParticipantLimit(delta) {
+            participantLimit = Math.max(2, Math.min(20, participantLimit + delta));
+            document.getElementById('participantLimit').textContent = participantLimit;
+
+            gsap.to('#participantLimit', {
+                duration: 0.2,
+                scale: 1.2,
+                yoyo: true,
+                repeat: 1,
+                ease: 'power2.inOut'
+            });
+        }
+
+        function createActivity() {
+            if (!selectedActivityType) {
+                Utils.showToast('請選擇活動類型', 'error');
+                return;
+            }
+
+            const title = document.getElementById('activityTitle').value.trim();
+            const time = document.getElementById('activityTime').value;
+            const location = document.getElementById('activityLocation').value.trim();
+            const description = document.getElementById('activityDescription').value.trim();
+
+            if (!title || !time || !location) {
+                Utils.showToast('請填寫必填欄位', 'error');
+                return;
+            }
+
+            Utils.showLoading('發起活動中...');
+            setTimeout(() => {
+                Utils.hideLoading();
+                closeModal('createActivityModal');
+                Utils.showToast('活動發起成功!', 'success');
+
+                // Reset form
+                document.getElementById('activityTitle').value = '';
+                document.getElementById('activityTime').value = '';
+                document.getElementById('activityLocation').value = '';
+                document.getElementById('activityDescription').value = '';
+                document.querySelectorAll('.activity-type-option').forEach(opt =>
+                    opt.classList.remove('selected'));
+                selectedActivityType = null;
+                participantLimit = 4;
+                document.getElementById('participantLimit').textContent = 4;
+            }, 1500);
+        }
+
+        function openActivityDetail(activity) {
+            currentActivityDetail = activity;
+
+            document.getElementById('detailEmoji').textContent = activity.emoji;
+            document.getElementById('detailTitle').textContent = activity.title;
+
+            const statusText = activity.status === 'recruiting' ? '招募中' :
+                              activity.status === 'full' ? '已額滿' : '已結束';
+            const statusClass = activity.status;
+            const statusElement = document.getElementById('detailStatus');
+            statusElement.textContent = statusText;
+            statusElement.className = `activity-status ${statusClass}`;
+
+            document.getElementById('detailInfo').innerHTML = `
+                <div class="activity-detail-item">
+                    <span class="activity-detail-icon">📅</span>
+                    <span>${activity.time}</span>
+                </div>
+                <div class="activity-detail-item">
+                    <span class="activity-detail-icon">📍</span>
+                    <span>${activity.location}</span>
+                </div>
+                <div class="activity-detail-item">
+                    <span class="activity-detail-icon">👥</span>
+                    <span>${activity.participants.length} / ${activity.maxParticipants} 人</span>
+                </div>
+            `;
+
+            document.getElementById('detailDescription').textContent =
+                activity.description || '主辦人沒有留下說明';
+
+            document.getElementById('detailOrganizer').innerHTML = `
+                <img src="${activity.organizer.avatar}" alt="${activity.organizer.name}" class="avatar">
+                <div class="activity-organizer-info" style="flex: 1;">
+                    <div class="activity-organizer-name">${activity.organizer.name}, ${activity.organizer.age}</div>
+                    <div class="activity-organizer-dept">${activity.organizer.department}</div>
+                </div>
+            `;
+
+            const participantsHtml = activity.participants.map(p => `
+                <div class="activity-organizer" style="border: none; padding: var(--space-sm) 0;">
+                    <img src="${p.avatar}" alt="${p.name}" class="avatar">
+                    <div class="activity-organizer-info">
+                        <div class="activity-organizer-name">${p.name}, ${p.age}</div>
+                        <div class="activity-organizer-dept">${p.department}</div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('detailParticipants').innerHTML = participantsHtml;
+
+            // Update join button
+            const joinBtn = document.getElementById('joinBtn');
+            if (activity.status === 'full') {
+                joinBtn.textContent = '活動已額滿';
+                joinBtn.disabled = true;
+                joinBtn.style.opacity = '0.5';
+            } else if (activity.status === 'closed') {
+                joinBtn.textContent = '活動已結束';
+                joinBtn.disabled = true;
+                joinBtn.style.opacity = '0.5';
+            } else {
+                joinBtn.textContent = '參加活動';
+                joinBtn.disabled = false;
+                joinBtn.style.opacity = '1';
+            }
+
+            document.getElementById('activityDetailPage').classList.add('show');
+
+            // Entrance animation
+            gsap.from('#activityDetailPage .activity-detail-hero', {
+                duration: 0.5,
+                y: -30,
+                opacity: 0,
+                ease: 'power2.out'
+            });
+
+            gsap.from('#activityDetailPage .activity-detail-section', {
+                duration: 0.4,
+                y: 20,
+                opacity: 0,
+                stagger: 0.1,
+                delay: 0.2,
+                ease: 'power2.out'
+            });
+        }
+
+        function closeActivityDetail() {
+            document.getElementById('activityDetailPage').classList.remove('show');
+        }
+
+        function joinActivity() {
+            if (!currentActivityDetail) return;
+
+            Utils.showConfirm(
+                `確定要參加「${currentActivityDetail.title}」嗎?`,
+                () => {
+                    Utils.showLoading('加入中...');
+                    setTimeout(() => {
+                        Utils.hideLoading();
+                        Utils.showToast('已成功參加活動!', 'success');
+                        closeActivityDetail();
+                    }, 1000);
+                }
+            );
+        }
+
+        function animateEntrance() {
+            gsap.from('.activity-header', {
+                duration: 0.6,
+                y: -30,
+                opacity: 0,
+                ease: 'power2.out'
+            });
+
+            gsap.from('.filter-section', {
+                duration: 0.5,
+                y: 20,
+                opacity: 0,
+                delay: 0.2,
+                ease: 'power2.out'
+            });
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

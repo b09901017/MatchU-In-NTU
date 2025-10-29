@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#003060">
+    <title>MatchU - 盲盒抽卡</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .swipe-page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #F8F9FA 0%, #E8F5E9 100%);
+            padding-bottom: 80px;
+        }
+
+        /* Card Container */
+        .card-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 550px;
+            margin: var(--space-xl) auto;
+            perspective: 1000px;
+        }
+
+        /* User Card */
+        .swipe-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease-in-out;
+            cursor: pointer;
+        }
+
+        .swipe-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .card-front-content {
+            text-align: center;
+            padding: var(--space-lg);
+        }
+
+        .card-front-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-md);
+        }
+
+        .card-front-text {
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+        }
+
+        .card-back {
+            background: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            background: linear-gradient(180deg, #87CEEB 0%, #4A7C59 100%);
+        }
+
+        .card-info {
+            padding: var(--space-lg);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+        }
+
+        .card-name {
+            font-size: var(--font-h3);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+        }
+
+        .card-department {
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            margin: var(--space-xs) 0;
+        }
+
+        .card-bio {
+            color: var(--text-secondary);
+            line-height: var(--line-height-loose);
+            font-size: var(--font-body-sm);
+            margin-top: var(--space-md);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-xl);
+            margin-top: var(--space-2xl);
+        }
+
+        .action-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-slow) var(--ease-standard);
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .btn-pass {
+            background: white;
+            color: var(--text-tertiary);
+        }
+
+        .btn-like {
+            background: var(--accent-coral);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Swipes Remaining */
+        .swipes-info {
+            text-align: center;
+            padding: var(--space-lg);
+        }
+
+        .swipes-count {
+            font-size: var(--font-body);
+            color: var(--text-secondary);
+        }
+
+        .swipes-count strong {
+            color: var(--accent-coral);
+            font-size: var(--font-h4);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-title {
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-sm);
+        }
+
+        .empty-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* Match Success Modal */
+        .match-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+        }
+
+        .match-modal.show {
+            display: flex;
+        }
+
+        .match-content {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            text-align: center;
+            max-width: 90%;
+            max-width: 400px;
+        }
+
+        .match-title {
+            font-size: 48px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .match-avatars {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin: var(--space-xl) 0;
+        }
+
+        .match-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            object-fit: cover;
+        }
+
+        .match-heart {
+            font-size: 32px;
+            animation: heartBeat 0.8s infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        .match-message {
+            font-size: var(--font-h4);
+            margin-bottom: var(--space-md);
+        }
+
+        .match-common {
+            color: var(--text-secondary);
+            font-size: var(--font-body-sm);
+            margin-bottom: var(--space-xl);
+        }
+    </style>
+</head>
+<body>
+    <div class="swipe-page page-with-nav">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="top-nav-title">MatchU</div>
+            </div>
+            <div class="top-nav-right">
+                <button class="btn-icon" aria-label="通知">
+                    <div class="badge-wrapper">
+                        <span>🔔</span>
+                        <span class="badge badge-absolute">3</span>
+                    </div>
+                </button>
+                <button class="btn-icon" onclick="window.location.href='settings.html'" aria-label="設定">
+                    <span>⚙️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Swipes Info -->
+        <div class="swipes-info">
+            <div class="swipes-count">
+                今天還有 <strong id="swipesCount">5</strong> 次機會 ❤️
+            </div>
+        </div>
+
+        <!-- Card Container -->
+        <div class="card-container" id="cardContainer">
+            <!-- Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn btn-pass" id="passBtn" aria-label="跳過">
+                ✖️
+            </button>
+            <button class="action-btn btn-like" id="likeBtn" aria-label="喜歡">
+                💖
+            </button>
+        </div>
+
+        <!-- Empty State (hidden initially) -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">🌙</div>
+            <h2 class="empty-title">今天的機會用完囉!</h2>
+            <p class="empty-text">明天 05:00 重置</p>
+            <button class="btn btn-primary" onclick="window.location.href='chat-list.html'">
+                查看配對對象
+            </button>
+            <button class="btn btn-secondary mt-md" onclick="window.location.href='profile.html'">
+                完善個人檔案
+            </button>
+        </div>
+
+        <!-- Match Success Modal -->
+        <div class="match-modal" id="matchModal">
+            <div class="match-content">
+                <div class="match-title">🎉 Match! 🎉</div>
+                <div class="match-avatars">
+                    <img src="" alt="我的頭像" class="match-avatar" id="myAvatar">
+                    <div class="match-heart">💖</div>
+                    <img src="" alt="對方頭像" class="match-avatar" id="theirAvatar">
+                </div>
+                <div class="match-message">
+                    你和 <strong id="matchName"></strong> 配對成功了!
+                </div>
+                <div class="match-common" id="matchCommon">
+                    共同興趣: 電影、咖啡
+                </div>
+                <button class="btn btn-coral btn-block" onclick="goToChat()">
+                    立即聊天
+                </button>
+                <button class="btn btn-text mt-md" onclick="closeMatchModal()">
+                    稍後再說
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="window.location.href='swipe.html'">
+                <div class="nav-icon">🎴</div>
+                <div>盲盒</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='chat-list.html'">
+                <div class="nav-icon">💬</div>
+                <div>聊天</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='activities.html'">
+                <div class="nav-icon">🎉</div>
+                <div>活動</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='profile.html'">
+                <div class="nav-icon">👤</div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+
+    <script>
+        let currentUserIndex = 0;
+        let swipesRemaining = 5;
+        let users = [];
+        let currentCard = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initSwipePage();
+        });
+
+        function initSwipePage() {
+            // 打亂用戶順序
+            users = Utils.shuffle([...FAKE_USERS]);
+
+            // 顯示第一張卡片
+            showNextCard();
+
+            // 綁定事件
+            document.getElementById('likeBtn').addEventListener('click', () => handleLike());
+            document.getElementById('passBtn').addEventListener('click', () => handlePass());
+
+            // 頁面進場動畫
+            gsap.from('.card-container', {
+                duration: 0.6,
+                scale: 0.8,
+                opacity: 0,
+                ease: 'back.out(1.5)'
+            });
+        }
+
+        function showNextCard() {
+            if (swipesRemaining === 0 || currentUserIndex >= users.length) {
+                showEmptyState();
+                return;
+            }
+
+            const user = users[currentUserIndex];
+            const cardHtml = createCardHTML(user);
+
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = cardHtml;
+
+            currentCard = document.getElementById('swipeCard');
+
+            // 綁定翻卡事件
+            currentCard.addEventListener('click', flipCard);
+
+            // 卡片進場動畫
+            gsap.from(currentCard, {
+                duration: 0.5,
+                scale: 0.8,
+                opacity: 0,
+                ease: 'back.out(1.5)'
+            });
+
+            // 更新計數
+            document.getElementById('swipesCount').textContent = swipesRemaining;
+        }
+
+        function createCardHTML(user) {
+            const commonInterests = Utils.getCommonInterests(
+                CURRENT_USER.interests,
+                user.interests
+            );
+
+            return `
+                <div class="swipe-card" id="swipeCard">
+                    <!-- Front Face (未翻轉) -->
+                    <div class="card-face card-front">
+                        <div class="card-front-content">
+                            <div class="card-front-icon">🎁</div>
+                            <div class="card-front-text">點擊翻牌</div>
+                        </div>
+                    </div>
+
+                    <!-- Back Face (翻轉後) -->
+                    <div class="card-face card-back">
+                        <img src="${user.photos[0]}" alt="${user.name}" class="card-image">
+                        <div class="card-info">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-name">${user.name}, ${user.age}</div>
+                                    <div class="card-department">📍 ${user.department}</div>
+                                </div>
+                            </div>
+
+                            <div class="tag-list">
+                                ${user.interests.slice(0, 5).map(interest => {
+                                    const isCommon = commonInterests.includes(interest);
+                                    return `<span class="tag ${isCommon ? 'highlight' : ''}">${interest}</span>`;
+                                }).join('')}
+                            </div>
+
+                            <div class="card-bio">${user.bio}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function flipCard() {
+            if (!currentCard) return;
+            currentCard.classList.add('flipped');
+
+            // 震動反饋
+            Utils.vibrate(10);
+
+            // 移除點擊事件(只能翻一次)
+            currentCard.removeEventListener('click', flipCard);
+        }
+
+        function handleLike() {
+            if (!currentCard) return;
+
+            const user = users[currentUserIndex];
+
+            // 卡片飛出動畫
+            gsap.to(currentCard, {
+                duration: 0.4,
+                x: window.innerWidth,
+                rotation: 15,
+                opacity: 0,
+                ease: 'power2.in',
+                onComplete: () => {
+                    swipesRemaining--;
+                    currentUserIndex++;
+
+                    // 30% 機率配對成功
+                    if (Math.random() < 0.3) {
+                        showMatchModal(user);
+                    } else {
+                        showNextCard();
+                    }
+                }
+            });
+
+            // 愛心飛出動畫
+            showHeartAnimation();
+        }
+
+        function handlePass() {
+            if (!currentCard) return;
+
+            // 卡片飛出動畫
+            gsap.to(currentCard, {
+                duration: 0.4,
+                x: -window.innerWidth,
+                rotation: -15,
+                opacity: 0,
+                ease: 'power2.in',
+                onComplete: () => {
+                    swipesRemaining--;
+                    currentUserIndex++;
+                    showNextCard();
+                }
+            });
+        }
+
+        function showHeartAnimation() {
+            const heart = document.createElement('div');
+            heart.style.cssText = `
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                font-size: 64px;
+                pointer-events: none;
+                z-index: 1000;
+            `;
+            heart.textContent = '💖';
+            document.body.appendChild(heart);
+
+            gsap.fromTo(heart,
+                { scale: 0, opacity: 0 },
+                {
+                    duration: 0.5,
+                    scale: 2,
+                    opacity: 1,
+                    y: -100,
+                    onComplete: () => heart.remove()
+                }
+            );
+        }
+
+        function showMatchModal(user) {
+            const modal = document.getElementById('matchModal');
+            const commonInterests = Utils.getCommonInterests(
+                CURRENT_USER.interests,
+                user.interests
+            );
+
+            // 填充資料
+            document.getElementById('myAvatar').src = CURRENT_USER.avatar;
+            document.getElementById('theirAvatar').src = user.avatar;
+            document.getElementById('matchName').textContent = user.name;
+            document.getElementById('matchCommon').textContent =
+                `共同興趣: ${commonInterests.join('、')}`;
+
+            // 顯示 Modal
+            modal.classList.add('show');
+
+            // 動畫
+            const content = modal.querySelector('.match-content');
+            gsap.from(content, {
+                duration: 0.5,
+                scale: 0.8,
+                opacity: 0,
+                ease: 'back.out(1.7)'
+            });
+        }
+
+        function closeMatchModal() {
+            const modal = document.getElementById('matchModal');
+            modal.classList.remove('show');
+            showNextCard();
+        }
+
+        function goToChat() {
+            Utils.showToast('開啟聊天室...', 'success');
+            setTimeout(() => {
+                window.location.href = 'chat-room.html?userId=1';
+            }, 500);
+        }
+
+        function showEmptyState() {
+            document.getElementById('cardContainer').style.display = 'none';
+            document.querySelector('.action-buttons').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+
+            gsap.from('#emptyState', {
+                duration: 0.5,
+                y: 30,
+                opacity: 0,
+                ease: 'power2.out'
+            });
+        }
+    </script>
+</body>
+</html>

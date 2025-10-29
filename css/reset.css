@@ -1,0 +1,92 @@
+/* ==========================================================================
+   CSS Reset
+   ========================================================================== */
+
+/* Box sizing規則 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 移除預設margin和padding */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* 設定核心預設值 */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 移除列表樣式 */
+ul,
+ol {
+  list-style: none;
+}
+
+/* 簡化表單元素 */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  border: none;
+  outline: none;
+}
+
+/* 移除button預設樣式 */
+button {
+  cursor: pointer;
+  background: none;
+}
+
+/* 圖片設定 */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 移除a標籤預設樣式 */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 移除斜體樣式 */
+address,
+em,
+i {
+  font-style: normal;
+}
+
+/* 響應式媒體 */
+img,
+video {
+  height: auto;
+}
+
+/* 移除input[type="number"]的spinner */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#003060">
+    <title>MatchU - 設定</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .settings-page {
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .settings-header {
+            background: var(--gradient-primary);
+            padding: var(--space-lg) var(--space-md);
+            color: white;
+        }
+
+        .settings-subtitle {
+            font-size: var(--font-body-sm);
+            opacity: 0.9;
+            margin-top: var(--space-xs);
+        }
+
+        .settings-section {
+            margin-top: var(--space-md);
+            background: white;
+        }
+
+        .settings-group-title {
+            padding: var(--space-md);
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            font-weight: var(--weight-semibold);
+            background: var(--bg-secondary);
+        }
+
+        .settings-item {
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background var(--transition-base);
+        }
+
+        .settings-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .settings-item:active {
+            background: var(--bg-tertiary);
+        }
+
+        .settings-item-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            flex: 1;
+        }
+
+        .settings-item-icon {
+            font-size: 24px;
+            width: 32px;
+            text-align: center;
+        }
+
+        .settings-item-content {
+            flex: 1;
+        }
+
+        .settings-item-label {
+            font-size: var(--font-body);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .settings-item-description {
+            font-size: var(--font-body-sm);
+            color: var(--text-tertiary);
+        }
+
+        .settings-item-value {
+            color: var(--text-secondary);
+            font-size: var(--font-body-sm);
+            margin-right: var(--space-sm);
+        }
+
+        .settings-item-arrow {
+            color: var(--text-tertiary);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: var(--border-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background var(--transition-base);
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-blue);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform var(--transition-base);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+
+        /* Range Slider */
+        .range-slider-container {
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+        }
+
+        .range-slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .danger-zone {
+            margin: var(--space-lg);
+        }
+
+        .danger-zone-title {
+            color: var(--error);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-md);
+        }
+
+        .delete-account-btn {
+            background: var(--error);
+            color: white;
+        }
+
+        .delete-account-btn:hover {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: var(--font-h3);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-md);
+        }
+
+        .modal-body {
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-body-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-body);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .preference-option {
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .preference-option:hover {
+            border-color: var(--primary-blue);
+            background: var(--bg-secondary);
+        }
+
+        .preference-option.selected {
+            border-color: var(--primary-blue);
+            background: var(--primary-light);
+        }
+
+        .preference-option input[type="checkbox"],
+        .preference-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-page page-with-nav">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <button class="btn-icon" onclick="window.history.back()">
+                    <span>←</span>
+                </button>
+                <div class="top-nav-title">設定</div>
+            </div>
+        </div>
+
+        <!-- Account Settings -->
+        <div class="settings-section">
+            <div class="settings-group-title">帳號設定</div>
+            <div class="settings-item" onclick="openEmailModal()">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">📧</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">電子郵件</div>
+                        <div class="settings-item-description" id="currentEmail">b12345678@ntu.edu.tw</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="openPasswordModal()">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">🔒</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">更改密碼</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+        </div>
+
+        <!-- Privacy Settings -->
+        <div class="settings-section">
+            <div class="settings-group-title">隱私設定</div>
+            <div class="settings-item" onclick="toggleSetting('profileVisibility', this)">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">👁️</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">顯示個人檔案</div>
+                        <div class="settings-item-description">讓其他人看見你的個人檔案</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active" data-setting="profileVisibility"></div>
+            </div>
+            <div class="settings-item" onclick="toggleSetting('onlineStatus', this)">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">🟢</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">顯示上線狀態</div>
+                        <div class="settings-item-description">讓配對對象看見你是否在線上</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active" data-setting="onlineStatus"></div>
+            </div>
+            <div class="settings-item" onclick="toggleSetting('readReceipts', this)">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">✓✓</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">已讀回條</div>
+                        <div class="settings-item-description">讓對方知道你已讀訊息</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active" data-setting="readReceipts"></div>
+            </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="settings-section">
+            <div class="settings-group-title">通知設定</div>
+            <div class="settings-item" onclick="toggleSetting('matchNotifications', this)">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">💖</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">配對通知</div>
+                        <div class="settings-item-description">當配對成功時通知你</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active" data-setting="matchNotifications"></div>
+            </div>
+            <div class="settings-item" onclick="toggleSetting('messageNotifications', this)">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">💬</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">訊息通知</div>
+                        <div class="settings-item-description">當收到新訊息時通知你</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active" data-setting="messageNotifications"></div>
+            </div>
+            <div class="settings-item" onclick="toggleSetting('activityNotifications', this)">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">🎉</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">活動邀約通知</div>
+                        <div class="settings-item-description">當有活動邀約時通知你</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active" data-setting="activityNotifications"></div>
+            </div>
+        </div>
+
+        <!-- Matching Preferences -->
+        <div class="settings-section">
+            <div class="settings-group-title">配對偏好</div>
+            <div class="settings-item" onclick="openGenderPreferenceModal()">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">⚧️</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">性別偏好</div>
+                    </div>
+                </div>
+                <div class="settings-item-value" id="genderPreference">全部</div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="openAgeRangeModal()">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">🎂</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">年齡範圍</div>
+                    </div>
+                </div>
+                <div class="settings-item-value" id="ageRange">18 - 30 歲</div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="openDistanceModal()">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">📍</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">活動距離範圍</div>
+                        <div class="settings-item-description">搜尋活動的最大距離</div>
+                    </div>
+                </div>
+                <div class="settings-item-value" id="distance">5 公里</div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+        </div>
+
+        <!-- Other Settings -->
+        <div class="settings-section">
+            <div class="settings-group-title">其他</div>
+            <div class="settings-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">🚫</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">封鎖名單</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">❓</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">幫助與支援</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">📄</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">服務條款</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">🔐</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">隱私政策</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+            <div class="settings-item" onclick="Utils.showToast('功能開發中', 'info')">
+                <div class="settings-item-left">
+                    <div class="settings-item-icon">ℹ️</div>
+                    <div class="settings-item-content">
+                        <div class="settings-item-label">關於 MatchU</div>
+                        <div class="settings-item-description">版本 1.0.0</div>
+                    </div>
+                </div>
+                <div class="settings-item-arrow">→</div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+            <div class="danger-zone-title">危險區域</div>
+            <button class="btn btn-block delete-account-btn" onclick="confirmDeleteAccount()">
+                刪除帳號
+            </button>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div class="modal" id="emailModal">
+        <div class="modal-content">
+            <div class="modal-header">更改電子郵件</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">新的 NTU 電子郵件</label>
+                    <input type="email" class="form-input" id="newEmail" placeholder="b12345678@ntu.edu.tw">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">確認密碼</label>
+                    <input type="password" class="form-input" id="confirmPassword" placeholder="輸入密碼以確認變更">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary flex-1" onclick="closeModal('emailModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="updateEmail()">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">更改密碼</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">目前密碼</label>
+                    <input type="password" class="form-input" id="currentPassword" placeholder="輸入目前密碼">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">新密碼</label>
+                    <input type="password" class="form-input" id="newPassword" placeholder="至少 8 個字元">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">確認新密碼</label>
+                    <input type="password" class="form-input" id="confirmNewPassword" placeholder="再次輸入新密碼">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary flex-1" onclick="closeModal('passwordModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="updatePassword()">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gender Preference Modal -->
+    <div class="modal" id="genderPreferenceModal">
+        <div class="modal-content">
+            <div class="modal-header">性別偏好</div>
+            <div class="modal-body">
+                <div class="preference-option selected" data-value="all">
+                    <input type="radio" name="gender" value="all" checked>
+                    <label>全部</label>
+                </div>
+                <div class="preference-option" data-value="male">
+                    <input type="radio" name="gender" value="male">
+                    <label>男性</label>
+                </div>
+                <div class="preference-option" data-value="female">
+                    <input type="radio" name="gender" value="female">
+                    <label>女性</label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary flex-1" onclick="closeModal('genderPreferenceModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="updateGenderPreference()">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Age Range Modal -->
+    <div class="modal" id="ageRangeModal">
+        <div class="modal-content">
+            <div class="modal-header">年齡範圍</div>
+            <div class="modal-body">
+                <div class="range-slider-container">
+                    <div class="range-slider-label">
+                        <span>最小年齡</span>
+                        <span id="minAgeValue">18</span>
+                    </div>
+                    <input type="range" class="range-slider" id="minAge" min="18" max="50" value="18" oninput="updateAgeRange()">
+                </div>
+                <div class="range-slider-container">
+                    <div class="range-slider-label">
+                        <span>最大年齡</span>
+                        <span id="maxAgeValue">30</span>
+                    </div>
+                    <input type="range" class="range-slider" id="maxAge" min="18" max="50" value="30" oninput="updateAgeRange()">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary flex-1" onclick="closeModal('ageRangeModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="saveAgeRange()">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distance Modal -->
+    <div class="modal" id="distanceModal">
+        <div class="modal-content">
+            <div class="modal-header">活動距離範圍</div>
+            <div class="modal-body">
+                <div class="range-slider-container">
+                    <div class="range-slider-label">
+                        <span>最大距離</span>
+                        <span id="distanceValue">5 公里</span>
+                    </div>
+                    <input type="range" class="range-slider" id="distanceSlider" min="1" max="20" value="5" oninput="updateDistanceValue()">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary flex-1" onclick="closeModal('distanceModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="saveDistance()">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+
+    <script>
+        // Settings state
+        const settings = {
+            profileVisibility: true,
+            onlineStatus: true,
+            readReceipts: true,
+            matchNotifications: true,
+            messageNotifications: true,
+            activityNotifications: true,
+            genderPreference: 'all',
+            minAge: 18,
+            maxAge: 30,
+            distance: 5
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            animateEntrance();
+        });
+
+        function loadSettings() {
+            // Load from localStorage if exists
+            const saved = localStorage.getItem('matchuSettings');
+            if (saved) {
+                Object.assign(settings, JSON.parse(saved));
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('genderPreference').textContent =
+                settings.genderPreference === 'all' ? '全部' :
+                settings.genderPreference === 'male' ? '男性' : '女性';
+
+            document.getElementById('ageRange').textContent =
+                `${settings.minAge} - ${settings.maxAge} 歲`;
+
+            document.getElementById('distance').textContent =
+                `${settings.distance} 公里`;
+        }
+
+        function saveSettings() {
+            localStorage.setItem('matchuSettings', JSON.stringify(settings));
+        }
+
+        function toggleSetting(key, element) {
+            const toggle = element.querySelector('.toggle-switch');
+            settings[key] = !settings[key];
+            toggle.classList.toggle('active');
+            saveSettings();
+
+            gsap.to(toggle, {
+                duration: 0.2,
+                scale: 1.1,
+                yoyo: true,
+                repeat: 1,
+                ease: 'power2.inOut'
+            });
+        }
+
+        // Modal functions
+        function openEmailModal() {
+            document.getElementById('emailModal').classList.add('show');
+            animateModal('emailModal');
+        }
+
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('show');
+            animateModal('passwordModal');
+        }
+
+        function openGenderPreferenceModal() {
+            document.getElementById('genderPreferenceModal').classList.add('show');
+            animateModal('genderPreferenceModal');
+
+            // Set current selection
+            document.querySelectorAll('#genderPreferenceModal .preference-option').forEach(option => {
+                const radio = option.querySelector('input');
+                if (radio.value === settings.genderPreference) {
+                    option.classList.add('selected');
+                    radio.checked = true;
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+
+            // Add click handlers
+            document.querySelectorAll('#genderPreferenceModal .preference-option').forEach(option => {
+                option.onclick = () => {
+                    document.querySelectorAll('#genderPreferenceModal .preference-option').forEach(o =>
+                        o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    option.querySelector('input').checked = true;
+                };
+            });
+        }
+
+        function openAgeRangeModal() {
+            document.getElementById('ageRangeModal').classList.add('show');
+            animateModal('ageRangeModal');
+
+            // Set current values
+            document.getElementById('minAge').value = settings.minAge;
+            document.getElementById('maxAge').value = settings.maxAge;
+            document.getElementById('minAgeValue').textContent = settings.minAge;
+            document.getElementById('maxAgeValue').textContent = settings.maxAge;
+        }
+
+        function openDistanceModal() {
+            document.getElementById('distanceModal').classList.add('show');
+            animateModal('distanceModal');
+
+            // Set current value
+            document.getElementById('distanceSlider').value = settings.distance;
+            document.getElementById('distanceValue').textContent = `${settings.distance} 公里`;
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            gsap.to(modal.querySelector('.modal-content'), {
+                duration: 0.2,
+                scale: 0.9,
+                opacity: 0,
+                onComplete: () => {
+                    modal.classList.remove('show');
+                }
+            });
+        }
+
+        function animateModal(modalId) {
+            const content = document.getElementById(modalId).querySelector('.modal-content');
+            gsap.from(content, {
+                duration: 0.3,
+                scale: 0.9,
+                opacity: 0,
+                ease: 'back.out(1.7)'
+            });
+        }
+
+        // Update functions
+        function updateEmail() {
+            const newEmail = document.getElementById('newEmail').value;
+            const password = document.getElementById('confirmPassword').value;
+
+            if (!Utils.isValidNTUEmail(newEmail)) {
+                Utils.showToast('請輸入有效的台大信箱', 'error');
+                return;
+            }
+
+            if (!password) {
+                Utils.showToast('請輸入密碼以確認變更', 'error');
+                return;
+            }
+
+            Utils.showLoading('更新中...');
+            setTimeout(() => {
+                Utils.hideLoading();
+                document.getElementById('currentEmail').textContent = newEmail;
+                closeModal('emailModal');
+                Utils.showToast('電子郵件已更新', 'success');
+            }, 1000);
+        }
+
+        function updatePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmNewPassword').value;
+
+            if (!current || !newPass || !confirm) {
+                Utils.showToast('請填寫所有欄位', 'error');
+                return;
+            }
+
+            if (newPass.length < 8) {
+                Utils.showToast('新密碼至少需要 8 個字元', 'error');
+                return;
+            }
+
+            if (newPass !== confirm) {
+                Utils.showToast('新密碼不一致', 'error');
+                return;
+            }
+
+            Utils.showLoading('更新中...');
+            setTimeout(() => {
+                Utils.hideLoading();
+                closeModal('passwordModal');
+                Utils.showToast('密碼已更新', 'success');
+            }, 1000);
+        }
+
+        function updateGenderPreference() {
+            const selected = document.querySelector('#genderPreferenceModal input:checked').value;
+            settings.genderPreference = selected;
+            saveSettings();
+            updateUI();
+            closeModal('genderPreferenceModal');
+            Utils.showToast('性別偏好已更新', 'success');
+        }
+
+        function updateAgeRange() {
+            const minAge = parseInt(document.getElementById('minAge').value);
+            const maxAge = parseInt(document.getElementById('maxAge').value);
+
+            // Ensure min is not greater than max
+            if (minAge > maxAge) {
+                document.getElementById('maxAge').value = minAge;
+            }
+
+            document.getElementById('minAgeValue').textContent = document.getElementById('minAge').value;
+            document.getElementById('maxAgeValue').textContent = document.getElementById('maxAge').value;
+        }
+
+        function saveAgeRange() {
+            settings.minAge = parseInt(document.getElementById('minAge').value);
+            settings.maxAge = parseInt(document.getElementById('maxAge').value);
+            saveSettings();
+            updateUI();
+            closeModal('ageRangeModal');
+            Utils.showToast('年齡範圍已更新', 'success');
+        }
+
+        function updateDistanceValue() {
+            const value = document.getElementById('distanceSlider').value;
+            document.getElementById('distanceValue').textContent = `${value} 公里`;
+        }
+
+        function saveDistance() {
+            settings.distance = parseInt(document.getElementById('distanceSlider').value);
+            saveSettings();
+            updateUI();
+            closeModal('distanceModal');
+            Utils.showToast('距離範圍已更新', 'success');
+        }
+
+        function confirmDeleteAccount() {
+            Utils.showConfirm(
+                '確定要刪除帳號嗎? 此操作無法復原,所有資料將被永久刪除。',
+                () => {
+                    Utils.showLoading('刪除中...');
+                    setTimeout(() => {
+                        Utils.hideLoading();
+                        Utils.showToast('帳號已刪除', 'success');
+                        setTimeout(() => {
+                            window.location.href = '../index.html';
+                        }, 1000);
+                    }, 2000);
+                }
+            );
+        }
+
+        function animateEntrance() {
+            gsap.from('.settings-section', {
+                duration: 0.5,
+                y: 20,
+                opacity: 0,
+                stagger: 0.1,
+                ease: 'power2.out'
+            });
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

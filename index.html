@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="MatchU - 台大專屬交友平台,線上配對,線下見面">
+    <meta name="theme-color" content="#003060">
+    <title>MatchU - 在台大,遇見對的人</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* Landing Page Specific Styles */
+        .landing-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, #87CEEB 0%, #4A7C59 100%);
+            padding: var(--space-lg);
+        }
+
+        /* 背景裝飾 - 椰林大道元素 */
+        .background-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .palm-tree {
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.6;
+            filter: blur(1px);
+        }
+
+        .palm-tree:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation: sway 4s ease-in-out infinite;
+        }
+
+        .palm-tree:nth-child(2) {
+            top: 30%;
+            right: 10%;
+            animation: sway 5s ease-in-out infinite 0.5s;
+        }
+
+        .palm-tree:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation: sway 4.5s ease-in-out infinite 1s;
+        }
+
+        .palm-tree:nth-child(4) {
+            bottom: 10%;
+            right: 8%;
+            animation: sway 5.5s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes sway {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(3deg);
+            }
+        }
+
+        /* Logo Container */
+        .logo-container {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+            z-index: 2;
+        }
+
+        .logo {
+            font-size: 64px;
+            font-weight: var(--weight-bold);
+            color: white;
+            margin-bottom: var(--space-md);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: var(--font-body);
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: var(--weight-medium);
+        }
+
+        /* Hero Content */
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 500px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: var(--weight-bold);
+            color: white;
+            margin-bottom: var(--space-md);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            line-height: 1.3;
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-h4);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--space-2xl);
+            line-height: 1.6;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .cta-btn {
+            width: 100%;
+            height: 56px;
+            font-size: var(--font-btn-lg);
+            border-radius: var(--radius-md);
+            font-weight: var(--weight-bold);
+            box-shadow: var(--shadow-xl);
+            transition: all var(--transition-slow) var(--ease-standard);
+        }
+
+        .cta-btn-primary {
+            background-color: var(--accent-coral);
+            color: white;
+        }
+
+        .cta-btn-primary:hover {
+            background-color: var(--accent-coral-dark);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .cta-btn-secondary {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: var(--primary-blue);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-btn-secondary:hover {
+            background-color: white;
+            transform: translateY(-4px);
+        }
+
+        /* Features */
+        .features {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: var(--space-xl);
+            z-index: 2;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-xs);
+            color: white;
+            font-size: var(--font-body-sm);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: var(--space-xs);
+        }
+
+        /* Floating hearts animation */
+        .floating-heart {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0;
+            animation: float 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 48px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .hero-subtitle {
+                font-size: var(--font-body);
+            }
+
+            .features {
+                display: none;
+            }
+
+            .palm-tree {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div class="landing-page">
+        <!-- Background Decoration -->
+        <div class="background-decoration">
+            <div class="palm-tree">🌴</div>
+            <div class="palm-tree">🌴</div>
+            <div class="palm-tree">🌴</div>
+            <div class="palm-tree">🌴</div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <div class="logo">MatchU</div>
+            <div class="logo-subtitle">台大專屬交友平台</div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <h1 class="hero-title">在台大,遇見對的人</h1>
+            <p class="hero-subtitle">
+                線上配對,線下見面<br>
+                打造最真實的校園交友體驗
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="cta-buttons">
+                <button class="btn cta-btn cta-btn-primary" onclick="navigateToRegister()">
+                    開始使用
+                </button>
+                <button class="btn cta-btn cta-btn-secondary" onclick="navigateToLogin()">
+                    已有帳號登入
+                </button>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">🎓</div>
+                <div>僅限台大生</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💖</div>
+                <div>真實配對</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎉</div>
+                <div>線下活動</div>
+            </div>
+        </div>
+
+        <!-- Floating Hearts -->
+        <div class="floating-heart" style="left: 10%;">💕</div>
+        <div class="floating-heart" style="left: 30%; animation-delay: 1s;">💖</div>
+        <div class="floating-heart" style="left: 50%; animation-delay: 2s;">💗</div>
+        <div class="floating-heart" style="left: 70%; animation-delay: 1.5s;">💕</div>
+        <div class="floating-heart" style="left: 90%; animation-delay: 0.5s;">💖</div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+
+    <script>
+        // 頁面載入動畫
+        document.addEventListener('DOMContentLoaded', () => {
+            initLandingPageAnimations();
+            startFloatingHearts();
+        });
+
+        // 初始化著陸頁動畫
+        function initLandingPageAnimations() {
+            const tl = gsap.timeline();
+
+            // Logo 動畫
+            tl.from('.logo-container', {
+                duration: 0.8,
+                y: -50,
+                opacity: 0,
+                ease: 'power3.out'
+            });
+
+            // Hero 內容動畫
+            tl.from('.hero-title', {
+                duration: 0.6,
+                y: 30,
+                opacity: 0,
+                ease: 'power2.out'
+            }, '-=0.4');
+
+            tl.from('.hero-subtitle', {
+                duration: 0.6,
+                y: 20,
+                opacity: 0,
+                ease: 'power2.out'
+            }, '-=0.3');
+
+            // 按鈕動畫
+            tl.from('.cta-buttons .btn', {
+                duration: 0.5,
+                y: 20,
+                opacity: 0,
+                stagger: 0.1,
+                ease: 'back.out(1.5)'
+            }, '-=0.2');
+
+            // Features 動畫
+            tl.from('.feature-item', {
+                duration: 0.4,
+                y: 20,
+                opacity: 0,
+                stagger: 0.1,
+                ease: 'power2.out'
+            }, '-=0.3');
+        }
+
+        // 開始浮動愛心動畫
+        function startFloatingHearts() {
+            const hearts = document.querySelectorAll('.floating-heart');
+            hearts.forEach((heart, index) => {
+                animateHeart(heart, index * 0.8);
+            });
+        }
+
+        function animateHeart(heart, delay) {
+            gsap.to(heart, {
+                duration: 4,
+                delay: delay,
+                repeat: -1,
+                ease: 'none',
+                opacity: 0.6,
+                y: -window.innerHeight - 100,
+                rotation: 360,
+                onStart: () => {
+                    gsap.set(heart, { opacity: 0, y: window.innerHeight });
+                }
+            });
+        }
+
+        // 導航函數
+        function navigateToRegister() {
+            // 添加點擊動畫
+            gsap.to('.landing-page', {
+                duration: 0.5,
+                opacity: 0,
+                scale: 0.95,
+                ease: 'power2.in',
+                onComplete: () => {
+                    window.location.href = 'pages/register.html';
+                }
+            });
+        }
+
+        function navigateToLogin() {
+            gsap.to('.landing-page', {
+                duration: 0.5,
+                opacity: 0,
+                scale: 0.95,
+                ease: 'power2.in',
+                onComplete: () => {
+                    // 直接跳到抽卡頁面(模擬已登入)
+                    window.location.href = 'pages/swipe.html';
+                }
+            });
+        }
+
+        // 添加按鈕互動效果
+        document.querySelectorAll('.cta-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                gsap.to(btn, {
+                    duration: 0.3,
+                    scale: 1.05,
+                    ease: 'power2.out'
+                });
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+
+            btn.addEventListener('mousedown', () => {
+                gsap.to(btn, {
+                    duration: 0.1,
+                    scale: 0.95
+                });
+            });
+
+            btn.addEventListener('mouseup', () => {
+                gsap.to(btn, {
+                    duration: 0.1,
+                    scale: 1.05
+                });
+            });
+        });
+    </script>
+</body>
+</html>

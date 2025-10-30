@@ -30,16 +30,16 @@
   user-select: none;
 }
 
-.swipe-card:hover {
+.swipe-card:not(.flipped):hover {
   filter: brightness(1.05);
 }
 
-.swipe-card:active {
+.swipe-card:not(.flipped):active {
   transform: scale(0.98);
 }
 
 .swipe-card.flipped {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) !important;
   cursor: default;
 }
 

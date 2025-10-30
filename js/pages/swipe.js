@@ -52,18 +52,31 @@ function showNextCard() {
   const container = document.getElementById('cardContainer');
   container.innerHTML = cardHtml;
 
-  currentCard = document.getElementById('swipeCard');
+  // 使用 setTimeout 確保 DOM 已更新
+  setTimeout(() => {
+    currentCard = document.getElementById('swipeCard');
 
-  // 綁定翻卡事件
-  currentCard.addEventListener('click', flipCard);
+    if (!currentCard) {
+      console.error('Failed to get swipeCard element');
+      return;
+    }
 
-  // 卡片進場動畫
-  gsap.from(currentCard, {
-    duration: 0.5,
-    scale: 0.8,
-    opacity: 0,
-    ease: 'back.out(1.5)'
-  });
+    console.log('Card created, binding click event...');
+
+    // 綁定翻卡事件
+    currentCard.addEventListener('click', flipCard);
+
+    // 添加視覺提示
+    currentCard.style.cursor = 'pointer';
+
+    // 卡片進場動畫
+    gsap.from(currentCard, {
+      duration: 0.5,
+      scale: 0.8,
+      opacity: 0,
+      ease: 'back.out(1.5)'
+    });
+  }, 0);
 
   // 更新計數
   document.getElementById('swipesCount').textContent = swipesRemaining;
@@ -118,12 +131,30 @@ function createCardHTML(user) {
 /**
  * 翻轉卡片
  */
-function flipCard() {
-  if (!currentCard) return;
+function flipCard(event) {
+  // 防止事件冒泡
+  if (event) {
+    event.stopPropagation();
+  }
+
+  if (!currentCard) {
+    console.error('currentCard is null');
+    return;
+  }
+
+  // 如果已經翻轉，不再執行
+  if (currentCard.classList.contains('flipped')) {
+    return;
+  }
+
+  console.log('Flipping card...');
   currentCard.classList.add('flipped');
 
   // 震動反饋
   Utils.vibrate(10);
+
+  // 顯示提示
+  Utils.showToast('已翻開卡片！', 'success');
 
   // 移除點擊事件(只能翻一次)
   currentCard.removeEventListener('click', flipCard);

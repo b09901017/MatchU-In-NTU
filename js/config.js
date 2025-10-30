@@ -456,6 +456,28 @@ function initializeUserData() {
   if (!userData) {
     userData = { ...CURRENT_USER };
     Storage.save('currentUser', userData);
+  } else {
+    // 確保舊版本的用戶資料也有必要的屬性
+    if (!userData.matches) {
+      userData.matches = [];
+    }
+    if (!userData.interests) {
+      userData.interests = [];
+    }
+    if (!userData.photos) {
+      userData.photos = [];
+    }
+    if (!userData.avatar) {
+      userData.avatar = CURRENT_USER.avatar;
+    }
+    if (!userData.bio) {
+      userData.bio = CURRENT_USER.bio;
+    }
+    if (!userData.dailySwipesRemaining) {
+      userData.dailySwipesRemaining = CONFIG.DAILY_SWIPE_LIMIT;
+    }
+    // 更新 localStorage
+    Storage.save('currentUser', userData);
   }
   return userData;
 }

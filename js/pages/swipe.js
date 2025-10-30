@@ -263,6 +263,15 @@ function showMatchModal(user) {
     user.interests
   );
 
+  // 保存配對關係
+  if (!currentUser.matches) {
+    currentUser.matches = [];
+  }
+  if (!currentUser.matches.includes(user.id)) {
+    currentUser.matches.push(user.id);
+    Storage.save('currentUser', currentUser);
+  }
+
   // 填充資料
   document.getElementById('myAvatar').src = currentUser.avatar;
   document.getElementById('theirAvatar').src = user.avatar;
@@ -296,9 +305,12 @@ function closeMatchModal() {
  * 前往聊天室
  */
 function goToChat() {
+  // 獲取最後配對的用戶 ID
+  const lastMatchId = currentUser.matches[currentUser.matches.length - 1];
+
   Utils.showToast('開啟聊天室...', 'success');
   setTimeout(() => {
-    window.location.href = 'chat-room.html?userId=1';
+    window.location.href = `chat-room.html?userId=${lastMatchId}`;
   }, 500);
 }
 

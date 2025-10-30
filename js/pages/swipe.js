@@ -105,7 +105,9 @@ function createCardHTML(user) {
 
       <!-- Back Face (翻轉後) -->
       <div class="card-face card-back">
-        <img src="${user.photos[0]}" alt="${user.name}" class="card-image">
+        <div class="card-image-container">
+          <img src="${user.photos[0]}" alt="${user.name}" class="card-image" onerror="this.style.display='none'">
+        </div>
         <div class="card-info">
           <div class="card-header">
             <div>
@@ -119,6 +121,10 @@ function createCardHTML(user) {
               const isCommon = commonInterests.includes(interest);
               return `<span class="tag ${isCommon ? 'highlight' : ''}">${interest}</span>`;
             }).join('')}
+            ${commonInterests.length > 0 ?
+              `<div style="width: 100%; font-size: var(--font-body-sm); color: var(--accent-coral); margin-top: var(--space-xs);">
+                💖 ${commonInterests.length} 個共同興趣
+              </div>` : ''}
           </div>
 
           <div class="card-bio">${user.bio}</div>
@@ -153,8 +159,13 @@ function flipCard(event) {
   // 震動反饋
   Utils.vibrate(10);
 
-  // 顯示提示
-  Utils.showToast('已翻開卡片！', 'success');
+  // 獲取當前用戶資料
+  const currentUserData = users[currentUserIndex];
+
+  // 延遲顯示提示，等翻轉動畫完成
+  setTimeout(() => {
+    Utils.showToast(`抽到了 ${currentUserData.name}！`, 'success');
+  }, 400);
 
   // 移除點擊事件(只能翻一次)
   currentCard.removeEventListener('click', flipCard);
